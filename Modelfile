@@ -1,0 +1,4 @@
+# Qwen3.5-9B with a 16k context window. Ollama's default window can be too
+# short for pi's system prompt plus the tool results.
+FROM qwen3.5:9b
+PARAMETER num_ctx 16384

@@ -1,0 +1,3 @@
+Responses: 8
+Mean workload rating: 3.75
+Mean clarity rating: 4.00

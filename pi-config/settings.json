@@ -1,0 +1,1 @@
+{ "defaultProvider": "ollama", "defaultModel": "qwen3.5-16k", "defaultThinkingLevel": "medium", "quietStartup": true }

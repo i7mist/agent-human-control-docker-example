@@ -1,0 +1,13 @@
+{
+  "providers": {
+    "ollama": {
+      "baseUrl": "http://host.docker.internal:11434/v1",
+      "api": "openai-completions",
+      "apiKey": "ollama",
+      "compat": { "supportsDeveloperRole": false, "supportsReasoningEffort": false },
+      "models": [
+        { "id": "qwen3.5-16k", "name": "Qwen3.5-9B with a 16k context, local", "reasoning": true, "input": ["text"], "contextWindow": 16384, "maxTokens": 8192 }
+      ]
+    }
+  }
+}

@@ -1,0 +1,3 @@
+2026-10-26 10:12:40 INFO loading data/responses.csv
+2026-10-26 10:12:40 WARN row R03 has an empty comment field
+2026-10-26 10:12:41 INFO wrote output/summary.txt
