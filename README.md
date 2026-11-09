@@ -11,7 +11,7 @@ This is one possible way to get these effects. Your own test case can be built d
 | `workspace/` | The folder the agent works in. It is the initial state of the environment. |
 | `instruction.md` | The task prompt the agent receives. |
 | `pi-config/` | Tells pi which model to use: Ollama on your laptop, reached from inside the container at `host.docker.internal:11434`. |
-| `Modelfile` | Makes a copy of Qwen3.5-9B with a 16k context window, so pi's prompt fits. |
+| `Modelfile-4b`, `Modelfile-2b` | Each makes a copy of Qwen3.5 (4B or 2B) with a 16k context window, so pi's prompt fits, and names it `qwen3.5-studio`. |
 | `Dockerfile` | Describes the container. It installs pi and Python and copies `workspace/`, the prompt, and the scripts into the image. |
 | `run.sh` | What the container runs: records the starting files, runs pi once, records the end files, and calls `make_outputs.py`. |
 | `make_outputs.py` | Reads pi's session file and the file lists, and writes the three output files. |
@@ -19,11 +19,19 @@ This is one possible way to get these effects. Your own test case can be built d
 ## Before class
 
 1. Install Docker Desktop and start it. Check it works with `docker run hello-world`. On a Mac with an Apple chip (M1 to M4), download the "Apple silicon" version, not the Intel one.
-2. Install Ollama, then download the model and make the 16k copy. The download is about 8 GB.
-   ```
-   ollama pull qwen3.5:9b
-   ollama create qwen3.5-16k -f Modelfile
-   ```
+2. Install Ollama, then download one model and make its 16k copy. Pick the model by how much memory your laptop has. On a Mac, check under Apple menu > About This Mac. On Windows, check under Settings > System > About.
+   - 16 GB of memory or more: use Qwen3.5-4B. The download is about 4 GB.
+     ```
+     ollama pull qwen3.5:4b
+     ollama create qwen3.5-studio -f Modelfile-4b
+     ```
+   - 8 GB of memory: use Qwen3.5-2B. The download is about 3 GB. It makes more mistakes and some runs take a few minutes.
+     ```
+     ollama pull qwen3.5:2b
+     ollama create qwen3.5-studio -f Modelfile-2b
+     ```
+
+   Both give the copy the same name, `qwen3.5-studio`, so every command below is the same for everyone. `config.json` records which size you used.
 
 ## Step 1: Build the image
 
@@ -43,6 +51,7 @@ docker run --rm -v "$PWD/runs/run-01:/output" w08-cleanup
 
 - `--rm` deletes the container when the run ends, together with everything the agent changed.
 - `-v` connects `runs/run-01` on your laptop to `/output` in the container. Only the results go there. The workspace is never connected to your laptop, so the agent cannot delete your real files.
+- Be careful with `-v`: the agent can read, change, or delete anything in a folder you connect this way. Only connect a folder that holds nothing you would mind losing, never your home folder or a project folder.
 
 ## Step 3: Read the outputs in runs/run-01
 

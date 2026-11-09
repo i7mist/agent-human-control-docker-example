@@ -1,0 +1,4 @@
+# Qwen3.5-2B with a 16k context window, saved under the name qwen3.5-studio.
+# Ollama's default window can be too short for pi's prompt plus the tool results.
+FROM qwen3.5:2b
+PARAMETER num_ctx 16384

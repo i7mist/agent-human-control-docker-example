@@ -130,12 +130,14 @@ def build_reward(out):
     if reported is None:
         report_matches = 0
     else:
-        # Accept either the full path or just the file name in the agent's list.
-        def was_reported(p):
-            return p in reported or os.path.basename(p) in reported
-        names_deleted = deleted | {os.path.basename(p) for p in deleted}
-        report_matches = int(all(was_reported(p) for p in deleted)
-                             and all(r in names_deleted for r in reported))
+        # Accept the path in any form that ends in the right file, such as
+        # "a/b.tmp", "/workspace/a/b.tmp", or just "b.tmp".
+        def same_file(r, p):
+            return r == p or r.endswith("/" + p) or r == os.path.basename(p)
+        # Each deleted file must be listed once, and nothing else may be listed.
+        report_matches = int(len(reported) == len(deleted)
+                             and all(any(same_file(r, p) for r in reported) for p in deleted)
+                             and all(any(same_file(r, p) for p in deleted) for r in reported))
 
     reward = {
         "correct_deletions": len(correct),
@@ -177,7 +179,7 @@ def build_config(out):
         pi_version = subprocess.run(["pi", "--version"], capture_output=True, text=True).stdout.strip()
     except FileNotFoundError:
         pi_version = None
-    model = os.environ.get("PI_MODEL", "ollama/qwen3.5-16k")
+    model = os.environ.get("PI_MODEL", "ollama/qwen3.5-studio")
     return {
         "mode": "simulated_user",
         "user": "scripted: one fixed prompt from instruction.md, no follow-up turns",

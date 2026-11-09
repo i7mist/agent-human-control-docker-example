@@ -11,7 +11,7 @@ date -u +%Y-%m-%dT%H:%M:%SZ > "$OUT/started_at.txt"
 
 # Run the agent once, non-interactively, with the task prompt.
 pi --print --offline \
-   --model "${PI_MODEL:-ollama/qwen3.5-16k}" \
+   --model "${PI_MODEL:-ollama/qwen3.5-studio}" \
    --thinking "${PI_THINKING:-medium}" \
    --session-dir "$OUT/pi-session" \
    "$(cat /task/instruction.md)" \
